@@ -40,7 +40,7 @@ cities <- tibble(
 ) %>% 
   dplyr::mutate(tip = tolower(name),
                 tip = stringr::str_replace_all(name, " ", "_"),
-                tip = glue::glue("<img style='border-radius:40px;' src=https://github.com/IcaroBernardes/carmen_sandiego_DOS/tree/master/www/cities/{tip}.png'>")) %>% 
+                tip = glue::glue("<img style='border-radius:40px;' src=https://raw.githubusercontent.com/IcaroBernardes/carmen_sandiego_DOS/master/www/cities/{tip}.png'>")) %>% 
   dplyr::mutate(xt = x - 0.032*stringr::str_length(name) - 0.035,
                 yt = y + 0.022)
 
