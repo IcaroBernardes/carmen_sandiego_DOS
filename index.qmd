@@ -1,0 +1,77 @@
+<!-- Conecta o site às fontes escolhidas do Google Fonts -->
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+
+```{r global, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(ggpath)
+library(ggiraph)
+library(glue)
+library(stringr)
+
+```
+
+```{r echo=FALSE}
+
+cities <- tibble(
+  name = c("MEXICO CITY","LONDON","MOSCOW",
+           "ISTANBUL","BAGHDAD","TOKYO",
+           "PORT MORESBY","NEW DELHI","BUENOS AIRES",
+           "SYDNEY","CITY OF SAN MARINO","SINGAPORE",
+           "ROME","REYKJAVIK","PEKING",
+           "MONTREAL","LIMA"),
+  x = c(-0.65,-0.01,0.23,
+        0.19,0.26,0.87,
+        0.91,0.45,-0.38,
+        0.92,0.08,0.65,
+        0.10,-0.16,0.72,
+        -0.48,-0.49),
+  y = c(0.10,0.65,0.70,
+        0.35,0.20,0.29,
+        -0.30,0.19,-0.64,
+        -0.71,0.41,-0.21,
+        0.35,0.86,0.38,
+        0.53,-0.26)
+) %>% 
+  dplyr::mutate(tip = tolower(name),
+                tip = stringr::str_replace_all(name, " ", "_"),
+                tip = glue::glue("<img style='border-radius:40px;' src='www/cities/{tip}.png'>")) %>% 
+  dplyr::mutate(xt = x - 0.032*stringr::str_length(name) - 0.035,
+                yt = y + 0.022)
+
+world <- cities %>% 
+  ggplot() +
+  ggpath::geom_from_path(aes(x = 0, y = 0, path = "www/world.png")) +
+  
+  geom_point_interactive(aes(x = x, y = y, tooltip = tip, data_id = name),
+                         shape = 22, fill = "#ffff55", color = "black", stroke = 1) +
+  
+  geom_text_interactive(aes(x = xt, y = yt, label = name, data_id = name),
+                        alpha = 0, family = "VT323", size = 5, hjust = 0) +
+  
+  coord_equal(xlim = c(-1,1), ylim = c(-1,1), ratio = 0.4)
+
+
+girafe(
+  ggobj = world,
+  height_svg = 4,
+  options = list(
+    opts_tooltip(
+      css = "background-color:transparent;",
+      opacity = 1,
+    ),
+    opts_hover(
+      css = girafe_css(
+        css = "fill:#ffff55;",
+        text = "stroke:black;stroke-width:0.5;fill:#ffff55;"
+      )
+    )
+  )
+)
+
+```
