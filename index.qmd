@@ -1,16 +1,18 @@
-<!-- Conecta o site às fontes escolhidas do Google Fonts -->
+<!-- Links the page to the chosen Google Fonts -->
 <head>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gabriela&family=VT323&display=swap" rel="stylesheet">
 </head>
 
+<!-- Links the page to the custom CSS -->
 <head>
 <link href="www/styles.css" rel="stylesheet">
 </head>
 
 ```{r global, echo=FALSE, warning=FALSE, message=FALSE}
 
+# Loads libraries and defines chunks defaults
 library(dplyr)
 library(ggplot2)
 library(ggpath)
@@ -18,12 +20,37 @@ library(ggiraph)
 library(glue)
 library(stringr)
 
+knitr::opts_chunk$set(
+  echo=FALSE
+)
+
 ```
 
-<div id="bkg_container">
-<div id="mega_container">
+<!-- Create containers for the background images and the content -->
+<div id="bkg_container"><div id="mega_container">
 
-```{r echo=FALSE}
+<!-- Create containers for the background images and the content -->
+<div id="top_title">WHERE</div>
+<div id="middle_title">IN THE WORLD IS</div>
+<div id="bottom_title">Carmen Sandiego?</div>
+
+
+<!-- Places the first message -->
+<img src="www/detective.png" id = "detective">
+
+<div id="msg1">
+Welcome to ACME, Detective. We recruited you because of your worldly
+knowledge and investigative skills. The sole purpose of our Agency is to
+monitor and catch evildoers. We believe that Carmen Sandiego; a.k.a.
+<span id="aka1">La Femme Rouge</span>, <span id="aka2">the Crimson Phantom</span>;
+is the leader of an Organization that targets National Treasures around the globe.
+</div>
+
+<div style="clear:both;"></div>
+
+
+
+```{r}
 
 cities <- tibble(
   name = c("MEXICO CITY","LONDON","MOSCOW",
@@ -75,7 +102,7 @@ world <- cities %>%
 
 girafe(
   ggobj = world,
-  height_svg = 4,
+  height_svg = 2.9,
   options = list(
     opts_tooltip(
       css = "background-color:transparent;",
@@ -94,4 +121,5 @@ girafe(
 
 </div></div>
 
+<!-- Places the fax image at the bottom -->
 <img src="www/fax.png" width="100%">

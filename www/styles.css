@@ -1,13 +1,65 @@
+/* Defines background of the page and default align and font */
 body {
   background: black;
+  text-align: center;
+  font-family: 'VT323', monospace;
+  line-height: 0.9;
 }
 
+/* Defines background image */
 #bkg_container {
   background-image: url("paper.png");
   background-repeat: repeat-y;
   background-size: 100%;
 }
 
+/* Creates a padding on the sides to show the paper sides */
 #mega_container {
   padding: 0 120px 0 120px;
+}
+
+/* Defines attributes of the title */
+#top_title {
+  font-size: 200px;
+  line-height: 0.7;
+  padding-top: 20px;
+}
+
+#middle_title {
+  font-size: 56px;
+  line-height: 0.7;
+}
+
+#bottom_title {
+  font-family: 'Gabriela', serif;
+  font-size: 56px;
+  line-height: 1.6;
+  color: #CC1A32;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+/* Defines attributes of the first message */
+#detective {
+  width: 20%;
+  float: left;
+  margin-left: 20px;
+}
+
+#msg1 {
+  width: 65%;
+  float: right;
+  text-align: justify;
+  font-size: 18px;
+  margin-right: 20px;
+}
+
+#aka1 {
+  font-style: italic;
+  color: #E24666;
+}
+
+#aka2 {
+  color: #AE0F36;
+  text-shadow: 0.8px 0.8px #ae0f36;
 }
