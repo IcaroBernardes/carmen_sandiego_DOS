@@ -1,0 +1,13 @@
+body {
+  background: black;
+}
+
+#bkg_container {
+  background-image: url("paper.png");
+  background-repeat: repeat-y;
+  background-size: 100%;
+}
+
+#mega_container {
+  padding: 0 120px 0 120px;
+}
