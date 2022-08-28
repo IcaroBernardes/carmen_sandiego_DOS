@@ -40,18 +40,20 @@ body {
 }
 
 /* Defines attributes of the first message */
-#detective {
+.detective {
   width: 20%;
   float: left;
   margin-left: 20px;
 }
 
-#msg1 {
-  width: 65%;
+.msg {
+  width: 75%;
   float: right;
   text-align: justify;
-  font-size: 18px;
+  font-size: 17px;
   margin-right: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
 }
 
 #aka1 {
@@ -62,4 +64,34 @@ body {
 #aka2 {
   color: #AE0F36;
   text-shadow: 0.8px 0.8px #ae0f36;
+}
+
+.clue {
+  font-weight: bold;
+}
+
+/* Defines attributes of the investigation images and tooltips */
+.person {
+  width: 130px;
+  height: 185px;
+  float: left;
+}
+
+.clue_person {
+    width: 175px;
+    float: right;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    background: white;
+    text-align: left;
+    font-size: 24px;
+}
+
+.tri {
+  position: absolute;
+  top: 80px;
+  left: 130px;
+  width: 20px;
+  height: 20px;
 }

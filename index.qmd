@@ -17,8 +17,10 @@ library(dplyr)
 library(ggplot2)
 library(ggpath)
 library(ggiraph)
+library(ggforce)
 library(glue)
 library(stringr)
+library(htmltools)
 
 knitr::opts_chunk$set(
   echo=FALSE
@@ -34,24 +36,37 @@ knitr::opts_chunk$set(
 <div id="middle_title">IN THE WORLD IS</div>
 <div id="bottom_title">Carmen Sandiego?</div>
 
-
 <!-- Places the first message -->
-<img src="www/detective.png" id = "detective">
+<img src="www/detective.png" class="detective">
+```{r}
 
-<div id="msg1">
-Welcome to ACME, Detective. We recruited you because of your worldly
-knowledge and investigative skills. The sole purpose of our Agency is to
-monitor and catch evildoers. We believe that Carmen Sandiego; a.k.a.
-<span id="aka1">La Femme Rouge</span>, <span id="aka2">the Crimson Phantom</span>;
-is the leader of an Organization that targets National Treasures around the globe.
-</div>
+## Define the location (spaces as underlines, lowercase)
+loc <- "budapest"
+
+## Defines the clue
+clue <- "that they are in the Land of the Magyars."
+
+## Defines the message
+div(class="msg",
+    'Welcome to ACME, Detective! We recruited you because of your worldly
+    knowledge and investigative skills. The sole purpose of our Agency is to
+    monitor and catch evildoers. We believe that Carmen Sandiego; a.k.a.',
+    span(id="aka1", 'La Femme Rouge,'),
+    'a.k.a. ',
+    span(id="aka2", 'the Crimson Phantom;'),
+    'is the leader of an organization that targets national treasures
+    around the globe. Their usual targets are in the map bellow. Can you
+    discover where their agent might be? The only thing we know for know is ',
+    span(class="clue", clue),
+)
+
+```
 
 <div style="clear:both;"></div>
 
-
-
 ```{r}
 
+## Defines locations, tooltips and names on the map
 cities <- tibble(
   name = c("MEXICO CITY","LONDON","MOSCOW",
            "ISTANBUL","BAGHDAD","TOKYO",
@@ -86,21 +101,27 @@ cities <- tibble(
 ) %>% 
   dplyr::mutate(tip = tolower(name),
                 tip = stringr::str_replace_all(tip, " ", "_"),
-                tip = glue::glue("<img style='border-radius:40px;' src='www/cities/{tip}.png'>")) %>% 
+                tip = glue::glue("<img style='border-radius:40px;' width='500px' height='540px' src='www/cities/{tip}.png'>")) %>% 
   dplyr::mutate(xt = x - 0.037*stringr::str_length(name) - 0.036,
                 yt = y + 0.022)
 
+## Defines the target city
+cities <- cities %>% 
+  dplyr::mutate(tip = stringr::str_replace(tip, loc, glue::glue("{loc}_vile")))
+
+## Places the map with the interactive text and points
 world <- cities %>% 
   ggplot() +
   ggpath::geom_from_path(aes(x = 0, y = 0, path = "www/world.png")) +
-  geom_point_interactive(aes(x = x, y = y, tooltip = tip, data_id = name),
-                         shape = 22, fill = "#ffff55", color = "black", stroke = 1) +
-  geom_text_interactive(aes(x = xt, y = yt, label = name, data_id = name),
-                        alpha = 0, family = "VT323", size = 6.5, hjust = 0) +
+  ggiraph::geom_point_interactive(aes(x = x, y = y, tooltip = tip, data_id = name),
+                                  shape = 22, fill = "#ffff55", color = "black", stroke = 1) +
+  ggiraph::geom_text_interactive(aes(x = xt, y = yt, label = name, data_id = name),
+                                 alpha = 0, family = "VT323", size = 6.5, hjust = 0) +
   coord_equal(xlim = c(-1,1), ylim = c(-1,1), ratio = 0.4) +
   theme_void()
 
-girafe(
+## Enables and configures interactivity
+ggiraph::girafe(
   ggobj = world,
   height_svg = 2.9,
   options = list(
@@ -118,6 +139,116 @@ girafe(
 )
 
 ```
+
+<!-- Places the second message -->
+<img src="www/detective.png" class="detective">
+```{r}
+
+## Defines the message
+div(class="msg",
+    "We know were they are, but we still don't know",
+    strong("WHO"),"they are. It's fundamental that you
+    go around the city and interview people. They may
+    have seen someone suspicious and will give you
+    some traits that you can compare to our files 
+    on the Carmen Sandiego's crew."
+)
+
+```
+
+<div style="clear:both;"></div>
+
+```{r}
+
+## Defines radius and angles
+r <- 0.75
+a <- seq(0, (11/12)*2, length.out = 12)
+
+## Gets the names of the files
+places <- list.files("www/wrapped") %>% 
+  stringr::str_subset("_person", negate = TRUE)
+people <- list.files("www/wrapped") %>% 
+  stringr::str_subset("_person")
+
+## Defines the clues about the suspect
+clues_people <- c(
+  "She took off to the city in a yellow convertible",
+  "I saw no one suspicious these days",
+  "She eagerly talked about having tickets to a Grand Slam match",
+  "I didn't see anyone that matches this description",
+  "She arrived in a beautiful mustard convertible",
+  "When her hat was off, I saw that her hair had a reddish tone",
+  "She was frantically looking for a Mexican food truck",
+  "Never heard of someone like this",
+  "She had a incredible jewel in her person",
+  "She had a taco stain in her coat",
+  "She said that she was a fan of Gustavo Kuerten",
+  "Her ruby necklace was very shiny"
+)
+
+## Defines coordinates of the locations and the tooltips
+investigate <- tibble(
+  path = places,
+  person = people,
+  x = r*cospi(a),
+  y = r*sinpi(a),
+  clue = clues_people
+) %>% 
+  dplyr::mutate(name = toupper(path),
+                name = stringr::str_replace_all(name, "_", " "),
+                name = stringr::str_remove(name, ".PNG"),
+                path = glue::glue("www/wrapped/{path}")) %>% 
+  dplyr::mutate(xt = x - 0.019*stringr::str_length(name) - 0.007,
+                yt = y - 0.16) %>% 
+  dplyr::mutate(tip = glue::glue("www/wrapped/{person}"),
+                tip = glue::glue("<img class='person' src='{tip}'><img class='tri' src='www/trispeech.png'><div class='clue_person'>{clue}</div>"))
+
+## Places the locations
+locations <- investigate %>% 
+  ggplot() +
+  ggforce::geom_ellipse(aes(x0 = 0, y0 = 0, a = 1.1, b = 1, angle = 0),
+               fill = "#F7EEB0", color = NA) +
+  geom_point(aes(x = 0, y = 0), size = 60, color = "white") +
+  ggpath::geom_from_path(aes(x = 0, y = 0, path = "www/magglass.png"),
+                         width = 0.3, height = 0.3) +
+  ggpath::geom_from_path(aes(x = x, y = y, path = path),
+                         width = 0.1, height = 0.1) +
+  ggiraph::geom_tile_interactive(aes(x = x, y = y, tooltip = tip, data_id = name),
+                                 width = 0.2, height = 0.2, alpha = 0.01) +
+  ggiraph::geom_text_interactive(aes(x = xt, y = yt, label = name, data_id = name),
+                                 alpha = 0, family = "VT323", size = 6, hjust = 0,
+                                 vjust = 0) +
+  coord_equal(xlim = c(-1,1), ylim = c(-1,1), ratio = 0.8) +
+  theme_void()
+
+## Enables and configures interactivity
+ggiraph::girafe(
+  ggobj = locations,
+  height_svg = 4,
+  width_svg = 5,
+  options = list(
+    opts_tooltip(
+      css = "background-color:black;border-radius:20px;",
+      opacity = 1, offx = 30, offy = -190
+    ),
+    opts_hover(
+      css = girafe_css(
+        css = "fill:#ffff55;",
+        text = "stroke:black;stroke-width:0.5;fill:#ffff55;"
+      )
+    )
+  )
+)
+
+```
+
+
+
+
+
+
+
+
 
 </div></div>
 
