@@ -5,10 +5,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Gabriela&family=VT323&display=swap" rel="stylesheet">
 </head>
 
+<!-- Links the page to the Font Awesome 3.2.1 CSS -->
+<head>
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+</head>
+
 <!-- Links the page to the custom CSS -->
 <head>
 <link href="www/styles.css" rel="stylesheet">
 </head>
+
+<!-- Defines meta attributes -->
+<meta property="og:title" content="Where in the World is Carmen Sandiego?">
+<meta property="og:type" content="article" />
+<meta property="og:description" content="A viz by Icaro Bernardes">
+<meta property="og:image" content="https://raw.githubusercontent.com/IcaroBernardes/carmen_sandiego_DOS/master/www/thumb.png">
+<meta property="og:url" content="https://icarobernardes.github.io/carmen_sandiego_DOS/">
+<meta name="twitter:card" content="summary_large_image">
 
 ```{r global, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -64,6 +78,7 @@ div(class="msg",
 
 <div style="clear:both;"></div>
 
+<!-- Places the world map -->
 ```{r}
 
 ## Defines locations, tooltips and names on the map
@@ -207,8 +222,8 @@ investigate <- tibble(
 locations <- investigate %>% 
   ggplot() +
   ggforce::geom_ellipse(aes(x0 = 0, y0 = 0, a = 1.1, b = 1, angle = 0),
-               fill = "#F7EEB0", color = NA) +
-  geom_point(aes(x = 0, y = 0), size = 60, color = "white") +
+                        fill = "#F7EEB0", color = NA) +
+  annotate("point", x = 0, y = 0, size = 60, color = "white") +
   ggpath::geom_from_path(aes(x = 0, y = 0, path = "www/magglass.png"),
                          width = 0.3, height = 0.3) +
   ggpath::geom_from_path(aes(x = x, y = y, path = path),
@@ -242,15 +257,224 @@ ggiraph::girafe(
 
 ```
 
+<!-- Places the third message -->
+<img src="www/detective.png" class="detective">
+```{r}
 
+## Defines the message
+div(class="msg",
+    "Now that you have a list of the suspect traits,
+    we can issue a warrant to arrest them. Go over
+    the files bellow and identify the suspect."
+)
 
+```
 
+<div style="clear:both;"></div>
 
+```{r}
 
+## Lists all info on the suspects
+cb_name <- c('Katherine "Boom-Boom" Drib',
+             'Ihor Ihorovich',
+             'Fast Eddie B.',
+             'Len "Red" Bulk',
+             'Scar Graynolt',
+             'Nick Brunch',
+             'Merey LaRoc',
+             'Dazzle Annie Nonker',
+             'Lady Agatha Wayland',
+             'Carmen Sandiego')
 
+cb_name_file <- c('Katherine Drib',
+                  'Ihor Ihorovich',
+                  'Fast Eddie B',
+                  'Len Bulk',
+                  'Scar Graynolt',
+                  'Nick Brunch',
+                  'Merey LaRoc',
+                  'Dazzle Annie',
+                  'Lady Agatha',
+                  'Carmen Sandiego') %>% 
+  toupper()
 
+cb_sex <- c('Female',
+            rep('Male', 5),
+            rep('Female', 4))
+
+cb_occup <- c('Motorcycle racer',
+              'Pretender to the Czarist throne',
+              'World class croquet player',
+              'Ex-professional hockey player and gambler',
+              'Folk guitarist',
+              'Ex-private eye',
+              'Freelance aerobic dancer',
+              'Yogurt bar owner',
+              'Reader of upper-class English mystery stories',
+              'Former spy for the Intelligence Service of Monaco')
+
+cb_hobby <- c('Mountain climbing',
+              'Croquet',
+              'Croquet',
+              'Mountain climbing',
+              'Croquet',
+              'Mountain climbing',
+              'Mountain climbing',
+              rep('Tennis', 3))
+
+cb_hair <- c('Brunette or brown',
+             'Blond',
+             'Raven-haired or black',
+             'Red',
+             'Red',
+             'Black',
+             'Brown',
+             'Blond',
+             'Red',
+             'Reddish-brown')
+
+cb_auto <- c('Honcho-1250 motorcycle',
+             'Limousine',
+             'Convertible',
+             'Convertible',
+             'Limousine with shaded windows',
+             '"Black Mamba" motorcycle',
+             'Fancy limousine',
+             'Bugatti limousine',
+             'Denghby Roadster',
+             '1939 Packard convertible')
+
+cb_feat <- c('Has a tattoo of an eagle on her left bicep',
+             'Strange Ukranian tattoo on right shoulder',
+             'Always leaves a diamond stickpin at the scene of his crimes',
+             'Tattoo of mermaid on his right thumb',
+             'Wears a five-carat pinky ring',
+             'Prefers soiled trenchcoats and snap-brimmed fedoras. Has brown eyes and a moustache',
+             'Has an absolute mania for fancy jewelry',
+             'Reported to have a tattoo',
+             'Has a diamond ring the size of a grapefruit',
+             'Never appears in public without her ruby necklace')
+
+cb_other <- c('Gourmet seafood cook; fascinated with health and fitness',
+              'Loves eating lobsters, watching cartoons and is fascinated by large marsupials',
+              'Fast Eddie is an impeccably dressed jet-setter and likes Mexican food',
+              'Loves seafood',
+              'Has a 2 meters henchman named "The Asp"; can eat his own weight in tacos',
+              "Loves Mexican food; always wears Crimefighter's ring",
+              'Loves spicy foods',
+              'Has an incredible craving for shellfish',
+              'Speeds through the countryside looking for great Mexican restaurants',
+              'Great fondness for tacos')
+
+## Defines coordinates of the files on the suspects
+cabinet <- tibble(
+  y = c(rep(1,5),rep(2,5)),
+  x = c(rep(1:5, 2)),
+  name = cb_name,
+  name_file = cb_name_file,
+  sex = cb_sex,
+  occup = cb_occup,
+  hobby = cb_hobby,
+  auto = cb_auto,
+  feat = cb_feat,
+  other = cb_other
+) %>% 
+  dplyr::mutate(path = tolower(name),
+                path = stringr::str_remove_all(path, "(\")|(\\.)"),
+                path = stringr::str_replace_all(path, " ", "_"),
+                tip = glue::glue("www/profiles/{path}_final.png"),
+                path = glue::glue("www/outlines/{path}_final.png")) %>% 
+  dplyr::mutate(tip = glue::glue("<div class='name_file'>{name_file}</div>
+                                 <div class='file'>
+                                 <img class='profile' src='{tip}' width='200px' height='200px'>
+                                 
+                                 <div class='top_file'>
+                                 <p><strong>Name: </strong>{name}</p>
+                                 <p><strong>Sex: </strong>{sex}</p>
+                                 <p><strong>Occupation: </strong>{occup}</p>
+                                 </div>
+                                 
+                                 <div class='mid_file'>
+                                 <p><strong>Hobby: </strong>{hobby}</p>
+                                 <p><strong>Auto: </strong>{auto}</p>
+                                 </div>
+                                 
+                                 <p class='feat_file'><strong>Feature: </strong>{feat}</p>
+                                 <p class='other_file'><strong>Other: </strong>{other}</p>
+                                 
+                                 </div>"))
+
+## Places the files
+files <- cabinet %>% 
+  ggplot() +
+  annotate("rect", xmin = 0.4, xmax = 6, ymin = 0.5, ymax = 3,
+           fill = "#8C4404", color = NA) +
+  annotate("point", x = 5.65, y = 2.68, color = "black", size = 10) +
+  annotate("point", x = 5.63, y = 2.70, color = "#d7d7d9", size = 10) +
+  annotate("point", x = 5.63, y = 2.75, color = "#919191", size = 3) +
+  annotate("ribbon", xmin = c(5.62,5.55), xmax = c(5.64,5.71), y = c(2.74,2.61),
+           fill = "#919191", color = NA) +
+  ggpath::geom_from_path(aes(x = x, y = y, path = path),
+                         width = 0.26, height = 0.22) +
+  ggiraph::geom_tile_interactive(aes(x = x, y = y, tooltip = tip, data_id = name),
+                                 width = 0.45, height = 0.65, alpha = 0.01) +
+  coord_equal(xlim = c(0.4,6), ylim = c(0.5,3), ratio = 242/201) +
+  theme_void()
+
+## Enables and configures interactivity
+ggiraph::girafe(
+  ggobj = files,
+  height_svg = 3,
+  width_svg = 5,
+  options = list(
+    opts_tooltip(
+      css = "background-color:transparent;",
+      opacity = 1, offx = 30, offy = 10
+    ),
+    opts_hover(
+      css = girafe_css(
+        css = "fill:#ffff55;",
+        text = "stroke:black;stroke-width:0.5;fill:#ffff55;"
+      )
+    )
+  )
+)
+
+```
+
+<!-- Places the fourth message -->
+<img src="www/detective.png" class="detective">
+```{r}
+
+## Defines the message
+div(class="msg",
+    'Good job, Detective! We found the treasure but,
+    no signal of',
+    span(class="carmen", 'Carmen Sandiego.'),
+    'We only found a note she left: "Please return this
+    artifact to where it belongs! ;)". Clearly the
+    super-thief detected our proximity and gave up on
+    this robbery. Do not despair, though. We shall
+    catch her next time!'
+)
+
+```
+
+<div style="clear:both;height:50px"></div>
 
 </div></div>
 
-<!-- Places the fax image at the bottom -->
-<img src="www/fax.png" width="100%">
+<!-- Places the authors and fax image at the bottom  -->
+<div id="footer">
+
+<img src="www/fax.png" id="fax" width="100%">
+
+<div id="aut1">Viz. by Ícaro Bernardes (@IcaroBSC)
+<a target="_blank" href="https://github.com/IcaroBernardes"><i class="icon-github"></i></a>
+<a target="_blank" href="https://twitter.com/IcaroBSC"><i class="icon-twitter"></i></a>
+<a target="_blank" href="https://www.linkedin.com/in/icarobsc/"><i class="icon-linkedin"></i></a>
+</div>
+<div id="aut2">Sprites and artwork by Brøderbund Software, Inc.</div>
+</div>
+
+</div>

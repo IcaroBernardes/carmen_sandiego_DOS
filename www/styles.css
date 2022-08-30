@@ -63,7 +63,7 @@ body {
 
 #aka2 {
   color: #AE0F36;
-  text-shadow: 0.8px 0.8px #ae0f36;
+  text-shadow: 0.9px 0.9px #ae0f36;
 }
 
 .clue {
@@ -94,4 +94,124 @@ body {
   left: 130px;
   width: 20px;
   height: 20px;
+}
+
+/* Defines attributes of the profile images and tooltips */
+.file, .name_file {
+  position: absolute;
+  background: #F7DAB7;
+  border: 4px black solid;
+}
+
+.file {
+  top: 50px;
+  width: 850px;
+  height: 500px;
+  font-size: 37px;
+  z-index: 0;
+}
+
+.name_file {
+  left: 400px;
+  width: 350px;
+  height: 54px;
+  padding-top: 10px;
+  font-size: 35px;
+  z-index: 1;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.profile {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 5px 2px black;
+}
+
+.top_file > p {
+  line-height: 0.8;
+  margin-bottom: 9px;
+}
+
+.top_file {
+  top: 50px;
+}
+
+.mid_file {
+  top: 205px;
+}
+
+.top_file, .mid_file {
+  left: 280px;
+  width: 520px;
+}
+
+.feat_file {
+  top: 300px;
+}
+
+.other_file {
+  top: 400px;
+}
+
+.feat_file, .other_file {
+  left: 50px;
+  width: 750px;
+}
+
+.top_file, .mid_file, .feat_file, .other_file {
+  position: absolute;
+  text-align: left;
+}
+
+/* Defines attributes of the fourth message */
+.carmen {
+  font-family: 'Gabriela', serif;
+  color: #CC1A32;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Defines attributes of the authorship and fax image  */
+#footer {
+  position: relative;
+}
+
+#aut1 {
+  top: 48%;
+  color: #14477A;
+}
+
+#aut2 {
+  top: 74%;
+  color: #E0A422;
+}
+
+#aut1, #aut2 {
+  position: absolute;
+  left: 6%;
+  text-align: left;
+  font-size: 30px;
+}
+
+i {
+  margin-left: 10px;
+}
+
+a i, a i:hover, a i:focus, a i:link, a i:visited {
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+a i:hover {
+  color: #16599c;
+}
+
+a i:focus, a i:link, a i:visited {
+  color: #2482E0;
+  text-decoration: none !important;
+  cursor: pointer;
 }
